@@ -7,5 +7,7 @@ This can be used to fix kotlin version related
 compatibility problem.
 
 ## installation
-run `./gradlew build` to build and install 
-`build/libs/aaaa-preload-newer-kotlin-<version>.jar` to your mods directory.
+Download `aaaa-preload-newer-kotlin-<version>.jar`
+from [latest release] and put into mods directory.
+
+[latest release]: https://github.com/anatawa12/preload-newer-kotlin/releases/latest
