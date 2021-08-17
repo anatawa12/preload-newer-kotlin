@@ -1,5 +1,5 @@
 plugins {
-    java
+    base
 }
 
 version = "1.5.21"
@@ -15,7 +15,7 @@ dependencies {
     shadowing("org.jetbrains.kotlin:kotlin-reflect:$version")
 }
 
-tasks.jar {
+val jar by tasks.creating(Jar::class) {
     for (kotlinJar in shadowing) {
         from(zipTree(kotlinJar)) {
             exclude("META-INF/versions/9/module-info.class")
@@ -23,4 +23,7 @@ tasks.jar {
     }
     archiveBaseName.set("aaaa-preload-newer-kotlin")
     manifest.attributes("FMLCorePlugin" to "invalid")
+}
+tasks.assemble {
+    dependsOn(jar)
 }
