@@ -36,6 +36,5 @@ jobs:
           git push
           git push --tags
           gh release create "v$NEW_VERSION" \
-            --target "v$NEW_VERSION" \
             --notes "release for kotlin $NEW_VERSION"
           gh release upload "v$NEW_VERSION" "build/libs/aaaa-preload-newer-kotlin-$NEW_VERSION.jar"
