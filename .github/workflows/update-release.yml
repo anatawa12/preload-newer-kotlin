@@ -1,0 +1,41 @@
+on:
+  workflow_dispatch: {}
+  schedule:
+    - cron: 0 0 * * *
+jobs:
+  update-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - id: pre
+        shell: bash
+        run: |
+          NEW_VERSION=$(curl -sL https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-jdk8/maven-metadata.xml | \
+              sed -E 's/[ \t]+<version>([0-9.]+)<\/version>/\1/' | grep -v '[<>]' | tail -1)
+          sed -i "s/version = \".*\"/version = \"$NEW_VERSION\"/" build.gradle.kts
+          # exit if no changes on head
+          if git diff --exit-code --quiet; then
+            echo "::set-output name=continue::false"
+          else
+            git commit -m "v$NEW_VERSION"
+            git tag "v$NEW_VERSION"
+            echo "::set-output name=NEW_VERSION::$NEW_VERSION"
+            echo "::set-output name=continue::true"
+          fi
+      - uses: actions/setup-java@v2
+        if: ${{ fromJSON(steps.pre.outputs.continue) }}
+        with:
+          distribution: 'temurin'
+          java-version: '8'
+      - shell: bash
+        if: ${{ fromJSON(steps.pre.outputs.continue) }}
+        env:
+          NEW_VERSION: ${{ steps.pre.outputs.NEW_VERSION }}
+        run: |
+          ./gradlew build
+          git push
+          git push --tags
+          gh release create "v$NEW_VERSION" \
+            --target "v$NEW_VERSION" \
+            --notes "release for kotlin $NEW_VERSION"
+          gh release upload "v$NEW_VERSION" "build/libs/aaaa-preload-newer-kotlin-$NEW_VERSION.jar"
