@@ -19,6 +19,7 @@ jobs:
           if git diff --exit-code --quiet; then
             echo "::set-output name=continue::false"
           else
+            git add .
             git commit -m "v$NEW_VERSION"
             git tag "v$NEW_VERSION"
             echo "::set-output name=NEW_VERSION::$NEW_VERSION"
