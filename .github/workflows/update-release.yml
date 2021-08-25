@@ -7,9 +7,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: anatawa12/something-releaser@v2
       - id: pre
         shell: bash
         run: |
+          set-git-user anatawa12-bot
           NEW_VERSION=$(curl -sL https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-jdk8/maven-metadata.xml | \
               sed -E 's/[ \t]+<version>([0-9.]+)<\/version>/\1/' | grep -v '[<>]' | tail -1)
           sed -i "s/version = \".*\"/version = \"$NEW_VERSION\"/" build.gradle.kts
