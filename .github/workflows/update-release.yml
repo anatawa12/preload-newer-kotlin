@@ -35,6 +35,7 @@ jobs:
         if: ${{ fromJSON(steps.pre.outputs.continue) }}
         env:
           NEW_VERSION: ${{ steps.pre.outputs.NEW_VERSION }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           ./gradlew build
           git push
