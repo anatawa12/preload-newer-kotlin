@@ -2,7 +2,7 @@ plugins {
     base
 }
 
-version = "1.5.30"
+version = "1.5.31"
 
 repositories {
     mavenCentral()
